@@ -56,6 +56,7 @@
     measurementId: "G-Y8PQDJ0RK9"
     };
 
+
     const firebaseConfig = typeof __firebase_config !== 'undefined' 
       ? JSON.parse(__firebase_config) 
       : fallbackFirebaseConfig;
@@ -69,7 +70,83 @@
     const appIdStr = typeof __app_id !== 'undefined' ? __app_id : 'notice-revision-app-v3';
 
     // ==========================================
-    // 2. SVG 圖示組件 (取代 lucide-react)
+    // 2. 學習數據 (提取至全域，方便各關卡共用)
+    // ==========================================
+    const learningData = {
+      '尋找': {
+        title: '尋找啟事',
+        intro: '用於尋找丟失的人、物或寵物。',
+        structure: [
+          { part: '背景', desc: '遺失的時間、地點、物件種類' },
+          { part: '特徵', desc: '人/物/寵物的特徵（如顏色、外形、特點）' },
+          { part: '結尾', desc: '聯絡方式（電話、地點）及報酬或感謝字句' }
+        ],
+        docTitle: '尋犬啟事',
+        docBody: [
+          '本人的牧羊狗於十月五日下午六時，在半山寶珊道走失。',
+          '該牧羊狗的頭、頸及背脊近尾部分淺棕色，頭部左右兩側皆有一道深棕色長毛，前胸、四肢及背脊近頸部分白色，走失時繫着深藍色頸帶。',
+          '如有人得悉牧羊狗的下落，請致電1234 5678與本人聯絡。拾獲者必有厚酬，萬分感謝！'
+        ],
+        docSign: '一德班同學 陳一心',
+        docDate: '二零一四年十月六日'
+      },
+      '告知': {
+        title: '告知啟事',
+        intro: '向公眾或特定受眾宣布訊息，使大眾知悉。',
+        structure: [
+          { part: '背景', desc: '發布這項訊息的原因或背景' },
+          { part: '詳情', desc: '具體細節（如新安排、生效日期、時間、地點等）' },
+          { part: '結尾', desc: '適當的呼籲，或表達歉意、感謝' }
+        ],
+        docTitle: '圖書館搬遷啟事',
+        docBody: [
+          '為配合學校行政樓擴建工程，本校圖書館將於下月進行整體搬遷，以期為同學提供更寬敞的閱讀環境。',
+          '新圖書館將遷至教學大樓三樓，並於六月一日起重新開放供同學使用。搬遷期間（五月二十日至五月三十一日），所有圖書借閱服務及自修室將暫停開放。',
+          '搬遷期間若造成任何不便，敬請各位師生多多包涵與原諒。'
+        ],
+        docSign: '圖書館管理小組組長 陳一心',
+        docDate: '二零二六年五月二十六日'
+      },
+      '徵求': {
+        title: '徵求啟事',
+        intro: '公開徵集、招集所需的人、事、物。（此處以「徵人」為例）',
+        structure: [
+          { part: '背景', desc: '召募的原因或活動背景' },
+          { part: '條件', desc: '徵求對象的具體條件、要求與職責' },
+          { part: '結尾', desc: '聯絡/報名方式，以及明確的截止日期' }
+        ],
+        docTitle: '招募學生圖書管理員啟事',
+        docBody: [
+          '為維持圖書館日常運作，並推廣校園閱讀風氣，本校圖書館現正公開招募新一屆「學生圖書管理員」。',
+          '申請者需為中一至中三學生，性格誠實、具備責任感並熱愛閱讀。獲選者之主要職責包括協助同學辦理借還書手續、整理書架以及維持館內秩序。',
+          '有意申請的同學，請於六月十日（星期三）下午五時前，前往圖書館向李主任遞交申請表格。名額有限，報名從速。'
+        ],
+        docSign: '圖書館管理小組組長 陳一心',
+        docDate: '二零二六年五月二十六日'
+      },
+      '更正': {
+        title: '更正啟事',
+        intro: '對先前發出含有錯誤的訊息，進行及時澄清和修正。',
+        structure: [
+          { part: '背景', desc: '早前發出通告/啟事中出錯的部分' },
+          { part: '詳情', desc: '澄清後的正確資料或全新安排' },
+          { part: '結尾', desc: '向受影響的受眾致歉' }
+        ],
+        docTitle: '更正秋季旅行集合時間啟事',
+        docBody: [
+          '本會於五月二十五日發出之「中一級秋季旅行通告」中，因排版疏忽，導致集合時間出現錯誤，特此聲明更正。',
+          '正確之集合時間應為「上午八時三十分」，集合地點則維持不變（學校操場）。請同學們準時到達集合。',
+          '對於是次失誤而引起的任何混亂及不便，本會深表歉意，並承諾日後定必加強校對。'
+        ],
+        docSign: '中一級刊編輯小組組長 陳一心',
+        docDate: '二零二六年五月二十六日'
+      }
+    };
+
+    const quizTypesOrder = ['尋找', '告知', '更正', '徵求'];
+
+    // ==========================================
+    // 3. SVG 圖示組件
     // ==========================================
     const CheckCircle2 = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>;
     const XCircle = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>;
@@ -87,7 +164,7 @@
 
 
     // ==========================================
-    // 3. 核心 React 應用程式
+    // 4. 核心 React 應用程式
     // ==========================================
     function App() {
       const [user, setUser] = useState(null);
@@ -99,7 +176,7 @@
       const [secretPwd, setSecretPwd] = useState('');
       const [pwdError, setPwdError] = useState('');
 
-      // 關卡進度 1: Puzzle, 2: Learn, 3: Quiz, 4: Form, 5: Done
+      // 關卡進度 1: Puzzle 1, 2: Learn, 3: Quiz Puzzle, 4: Form, 5: Done
       const [step, setStep] = useState(1); 
       
       // -- 第一關：格式拼圖狀態 --
@@ -118,11 +195,17 @@
       // -- 第二關：結構學習狀態 --
       const [activeTab, setActiveTab] = useState('尋找');
 
-      // -- 第三關：小測狀態 --
+      // -- 第三關：公文結構大對決 (段落拼圖) 狀態 --
       const [quizIndex, setQuizIndex] = useState(0);
       const [score, setScore] = useState(0);
       const [showQuizResult, setShowQuizResult] = useState(false);
-      const [quizFeedback, setQuizFeedback] = useState(null);
+      
+      const [quizBank, setQuizBank] = useState([null, null, null]);
+      const [quizSlots, setQuizSlots] = useState([null, null, null]);
+      const [quizDraggedItem, setQuizDraggedItem] = useState(null);
+      const [quizDragOverSlot, setQuizDragOverSlot] = useState(null);
+      const [quizError, setQuizError] = useState('');
+      const [quizSuccess, setQuizSuccess] = useState(false);
       
       // -- 第四關：學生提交表單狀態 --
       const [studentInfo, setStudentInfo] = useState({ class: '', name: '', idNumber: '' });
@@ -173,6 +256,21 @@
         
         return () => unsubscribe();
       }, [user, isAdmin]);
+
+      // 初始化第三關小測拼圖資料
+      useEffect(() => {
+        if (step === 3 && !showQuizResult && quizIndex < quizTypesOrder.length) {
+          const currentType = quizTypesOrder[quizIndex];
+          const correctStructure = learningData[currentType].structure.map(s => s.desc);
+          // 將段落打亂放入備選區
+          const shuffled = [...correctStructure].sort(() => Math.random() - 0.5);
+          setQuizBank(shuffled);
+          setQuizSlots([null, null, null]);
+          setQuizError('');
+          setQuizSuccess(false);
+        }
+      }, [step, quizIndex, showQuizResult]);
+
 
       // --- 打開客製化密碼彈窗 ---
       const handleOpenSecretModal = () => {
@@ -374,114 +472,119 @@
         }
       };
 
-      // --- 第二關：啟事鋪排數據 ---
-      const learningData = {
-        '尋找': {
-          title: '尋找啟事',
-          intro: '用於尋找丟失的人、物或寵物。',
-          structure: [
-            { part: '背景', desc: '開首寫遺失的時間、地點、物件種類' },
-            { part: '特徵', desc: '中間段落寫人/物/寵物的特徵（如顏色、外形、特點）' },
-            { part: '結尾', desc: '末段寫明聯絡方式（電話、地點）及報酬或感謝字句' }
-          ],
-          docTitle: '尋犬啟事',
-          docBody: [
-            '本人的牧羊狗於十月五日下午六時，在半山寶珊道走失。',
-            '該牧羊狗的頭、頸及背脊近尾部分淺棕色，頭部左右兩側皆有一道深棕色長毛，前胸、四肢及背脊近頸部分白色，走失時繫着深藍色頸帶。',
-            '如有人得悉牧羊狗的下落，請致電1234 5678與本人聯絡。拾獲者必有厚酬，萬分感謝！'
-          ],
-          docSign: '一德班同學 陳一心',
-          docDate: '二零一四年十月六日'
-        },
-        '告知': {
-          title: '告知啟事',
-          intro: '向公眾或特定受眾宣布訊息，使大眾知悉。',
-          structure: [
-            { part: '背景', desc: '交代發布這項訊息的原因或背景' },
-            { part: '詳情', desc: '詳細說明具體細節（如新安排、生效日期、時間、地點等）' },
-            { part: '結尾', desc: '作適當呼籲，或表達歉意、感謝（如：不便之處，敬請原諒）' }
-          ],
-          docTitle: '圖書館搬遷啟事',
-          docBody: [
-            '為配合學校行政樓擴建工程，本校圖書館將於下月進行整體搬遷，以期為同學提供更寬敞的閱讀環境。',
-            '新圖書館將遷至教學大樓三樓，並於六月一日起重新開放供同學使用。搬遷期間（五月二十日至五月三十一日），所有圖書借閱服務及自修室將暫停開放。',
-            '搬遷期間若造成任何不便，敬請各位師生多多包涵與原諒。'
-          ],
-          docSign: '圖書館管理小組組長 陳一心',
-          docDate: '二零二六年五月二十六日'
-        },
-        '徵求': {
-          title: '徵求啟事',
-          intro: '公開徵集、招集所需的人、事、物。（此處以「徵人」為例）',
-          structure: [
-            { part: '背景', desc: '開首說明召募的原因或活動背景' },
-            { part: '條件', desc: '列出徵求對象的具體條件、要求與職責' },
-            { part: '結尾', desc: '說明聯絡/報名方式，以及明確的截止日期' }
-          ],
-          docTitle: '招募學生圖書管理員啟事',
-          docBody: [
-            '為維持圖書館日常運作，並推廣校園閱讀風氣，本校圖書館現正公開招募新一屆「學生圖書管理員」。',
-            '申請者需為中一至中三學生，性格誠實、具備責任感並熱愛閱讀。獲選者之主要職責包括協助同學辦理借還書手續、整理書架以及維持館內秩序。',
-            '有意申請的同學，請於六月十日（星期三）下午五時前，前往圖書館向李主任遞交申請表格。名額有限，報名從速。'
-          ],
-          docSign: '圖書館管理小組組長 陳一心',
-          docDate: '二零二六年五月二十六日'
-        },
-        '更正': {
-          title: '更正啟事',
-          intro: '對先前發出含有錯誤的訊息，進行及時澄清和修正。',
-          structure: [
-            { part: '背景', desc: '開首指出早前發出通告/啟事中出錯的部分' },
-            { part: '詳情', desc: '列出澄清後的正確資料或全新安排' },
-            { part: '結尾', desc: '誠懇地向受影響的受眾致歉' }
-          ],
-          docTitle: '更正秋季旅行集合時間啟事',
-          docBody: [
-            '本會於五月二十五日發出之「中一級秋季旅行通告」中，因排版疏忽，導致集合時間出現錯誤，特此聲明更正。',
-            '正確之集合時間應為「上午八時三十分」，集合地點則維持不變（學校操場）。請同學們準時到達集合。',
-            '對於是次失誤而引起的任何混亂及不便，本會深表歉意，並承諾日後定必加強校對。'
-          ],
-          docSign: '中一級刊編輯小組組長 陳一心',
-          docDate: '二零二六年五月二十六日'
+      // --- 第三關：結構鋪排拖曳邏輯 ---
+      const handleQuizDragStart = (item, index, source) => {
+        setQuizDraggedItem({ item, index, source }); // source: 'bank' or 'slot'
+      };
+
+      const handleQuizDragOver = (e, index) => {
+        e.preventDefault();
+        setQuizDragOverSlot(index);
+      };
+
+      const handleQuizDropSlot = (targetIndex) => {
+        if (!quizDraggedItem) return;
+        setQuizDragOverSlot(null);
+        
+        let newBank = [...quizBank];
+        let newSlots = [...quizSlots];
+        const targetOccupiedItem = newSlots[targetIndex];
+
+        if (quizDraggedItem.source === 'bank') {
+          newSlots[targetIndex] = quizDraggedItem.item;
+          newBank[quizDraggedItem.index] = targetOccupiedItem;
+        } else if (quizDraggedItem.source === 'slot') {
+          if (quizDraggedItem.index === targetIndex) return;
+          newSlots[targetIndex] = quizDraggedItem.item;
+          newSlots[quizDraggedItem.index] = targetOccupiedItem;
+        }
+        
+        setQuizBank(newBank);
+        setQuizSlots(newSlots);
+        setQuizDraggedItem(null);
+        setQuizError('');
+      };
+
+      const handleQuizDragEnd = () => {
+        setQuizDraggedItem(null);
+        setQuizDragOverSlot(null);
+      };
+
+      const handleQuizBankClick = (item, index) => {
+        if (!item) return;
+        const emptySlotIdx = quizSlots.indexOf(null);
+        if (emptySlotIdx !== -1) {
+          const newSlots = [...quizSlots];
+          newSlots[emptySlotIdx] = item;
+          const newBank = [...quizBank];
+          newBank[index] = null;
+          setQuizSlots(newSlots);
+          setQuizBank(newBank);
+          setQuizError('');
         }
       };
 
-      // --- 第三關：小測邏輯 ---
-      const quizQuestions = [
-        {
-          description: "開首寫遺失的地點、時間和物件，中間段落寫物件/寵物的特徵，末段寫聯絡方式及報酬。",
-          answer: "尋找啟事"
-        },
-        {
-          description: "交代發布訊息的原因及背景，接著說明具體細節(如時間、地點、新安排)，最後作出呼籲或補充說明。",
-          answer: "告知啟事"
-        },
-        {
-          description: "開首點出發現錯誤的地方，接著列出正確的資料或安排，最後向受影響的人士誠懇致歉。",
-          answer: "更正啟事"
-        },
-        {
-          description: "說明活動背景或原因，列出招募對象的具體條件及要求，最後提供聯絡方式和截止日期。",
-          answer: "徵求啟事"
+      const handleQuizSlotClick = (item, index) => {
+        if (!item) return;
+        const emptyBankIdx = quizBank.indexOf(null);
+        if (emptyBankIdx !== -1) {
+          const newBank = [...quizBank];
+          newBank[emptyBankIdx] = item;
+          const newSlots = [...quizSlots];
+          newSlots[index] = null;
+          setQuizSlots(newSlots);
+          setQuizBank(newBank);
+          setQuizError('');
         }
-      ];
+      };
 
-      const handleQuizAnswer = (answer) => {
-        const isCorrect = answer === quizQuestions[quizIndex].answer;
-        setQuizFeedback(isCorrect);
+      const verifyQuizPuzzle = () => {
+        if (quizSlots.includes(null)) {
+          setQuizError('請將三個段落都填入上方的排序空格中！');
+          return;
+        }
+        
+        const currentType = quizTypesOrder[quizIndex];
+        const correctStructure = learningData[currentType].structure.map(s => s.desc);
+        const isCorrect = quizSlots.every((slot, i) => slot === correctStructure[i]);
         
         if (isCorrect) {
-          setScore(score + 1);
-        }
-
-        setTimeout(() => {
-          setQuizFeedback(null);
-          if (quizIndex < quizQuestions.length - 1) {
-            setQuizIndex(quizIndex + 1);
-          } else {
-            setShowQuizResult(true);
+          setQuizError('');
+          setQuizSuccess(true);
+          setScore(prev => prev + 1); // 累加得分
+          
+          if (window.confetti) {
+            window.confetti({ particleCount: 50, spread: 60, origin: { y: 0.8 } });
           }
-        }, 1000);
+          
+          setTimeout(() => {
+            if (quizIndex < quizTypesOrder.length - 1) {
+              setQuizIndex(prev => prev + 1);
+            } else {
+              setShowQuizResult(true);
+            }
+          }, 1500);
+        } else {
+          // 答錯時，將錯誤的段落退回下方備選區
+          let returnedItems = [];
+          const newSlots = quizSlots.map((slot, i) => {
+            if (slot !== correctStructure[i]) {
+              returnedItems.push(slot);
+              return null;
+            }
+            return slot;
+          });
+          
+          const newBank = [...quizBank];
+          returnedItems.forEach(item => {
+            const emptyIdx = newBank.indexOf(null);
+            if (emptyIdx !== -1) newBank[emptyIdx] = item;
+          });
+          
+          setQuizSlots(newSlots);
+          setQuizBank(newBank);
+          setQuizError('順序不對喔！請仔細思考啟事的邏輯鋪排，已為你退回錯誤的段落。');
+        }
       };
 
       const handleQuizNextStep = () => {
@@ -509,8 +612,8 @@
           if (db && user) {
             await db.collection('artifacts').doc(appIdStr).collection('public').doc('data').collection('notice_submissions').add({
               ...studentInfo,
-              score: score,
-              totalQuestions: quizQuestions.length,
+              score: score, // 小測總得分
+              totalQuestions: quizTypesOrder.length,
               timestamp: firebase.firestore.FieldValue.serverTimestamp(),
               userId: user.uid
             });
@@ -539,7 +642,7 @@
           
           {/* 頁面頂部導航 */}
           <header className="bg-white shadow-md p-4 sticky top-0 z-40">
-            <div className="max-w-4xl mx-auto flex items-center justify-between">
+            <div className="max-w-5xl mx-auto flex items-center justify-between">
               <h1 className="text-xl md:text-2xl font-extrabold text-indigo-600 flex items-center select-none">
                 <BookOpen className="mr-2 w-6 h-6" /> 實用文溫習：
                 <span 
@@ -567,7 +670,7 @@
             </div>
           </header>
 
-          <main className="max-w-4xl mx-auto p-4 mt-6">
+          <main className="max-w-5xl mx-auto p-4 md:p-6 mt-4 md:mt-8">
             
             {/* --- 第一關：格式大拼圖 --- */}
             {step === 1 && (
@@ -578,8 +681,8 @@
                 </div>
 
                 {/* 格式拼圖稿紙模擬 */}
-                <div className="bg-slate-100 border-2 border-slate-200 rounded-2xl p-4 md:p-8 max-w-2xl mx-auto shadow-inner mb-6 relative">
-                  <div className="bg-white border border-slate-300 rounded-xl p-6 shadow-md min-h-[460px] flex flex-col gap-6 justify-between">
+                <div className="bg-slate-100 border-2 border-slate-200 rounded-3xl p-5 md:p-10 max-w-3xl mx-auto shadow-inner mb-8 relative">
+                  <div className="bg-white border border-slate-300 rounded-2xl p-6 md:p-8 shadow-md min-h-[460px] md:min-h-[500px] flex flex-col gap-6 justify-between">
                     
                     {/* 1. 標題區 (置中) */}
                     <div className="flex flex-col items-center">
@@ -820,69 +923,120 @@
               </div>
             )}
 
-            {/* --- 第三關：小測驗 --- */}
+            {/* --- 第三關：公文結構大對決 (段落拼圖遊戲) --- */}
             {step === 3 && (
-              <div className="bg-white rounded-3xl shadow-xl p-6 md:p-8 animate-in fade-in min-h-[400px]">
-                <div className="text-center max-w-xl mx-auto mb-6">
+              <div className="bg-white rounded-3xl shadow-xl p-6 md:p-8 animate-in fade-in min-h-[500px]">
+                <div className="text-center max-w-2xl mx-auto mb-8">
                   <span className="px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-xs font-bold uppercase tracking-wider">第三關</span>
-                  <h2 className="text-2xl md:text-3xl font-extrabold mt-2 text-slate-800">公文結構大對決 🎯</h2>
-                  <p className="text-slate-500 mt-2 text-sm">
-                    請閱讀以下正文內容的鋪排方式，判斷它屬於哪一個類型的啟事：
-                  </p>
+                  <h2 className="text-2xl md:text-3xl font-extrabold mt-3 text-slate-800">公文結構大對決 🎯</h2>
+                  
+                  {!showQuizResult && quizIndex < quizTypesOrder.length && (
+                    <p className="text-slate-600 mt-4 font-medium bg-indigo-50 inline-block px-5 py-3 rounded-xl border border-indigo-100 md:text-lg">
+                      請根據 <span className="font-black text-indigo-700">【{quizTypesOrder[quizIndex]}啟事】</span> 的寫作邏輯，將底部的段落內容，<br className="hidden md:block"/>依正確的先後順序排入空格中！
+                    </p>
+                  )}
                 </div>
                 
                 {!showQuizResult ? (
-                  <div className="max-w-2xl mx-auto">
-                    <div className="flex justify-between items-center mb-4 text-xs font-bold text-slate-400">
-                      <span>問題 {quizIndex + 1} / {quizQuestions.length}</span>
-                      <span>當前得分：{score} 分</span>
-                    </div>
-                    
-                    <div className="bg-slate-50 border-2 border-slate-200/60 rounded-2xl p-6 md:p-8 mb-6 text-center shadow-inner text-base md:text-lg font-medium text-slate-700 leading-relaxed">
-                      「 {quizQuestions[quizIndex].description} 」
-                    </div>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {Object.keys(learningData).map((type) => (
-                        <button
-                          key={type}
-                          onClick={() => handleQuizAnswer(`${type}啟事`)}
-                          disabled={quizFeedback !== null}
-                          className={`p-4 rounded-xl text-base font-extrabold border-2 transition-all ${
-                            quizFeedback !== null
-                              ? quizQuestions[quizIndex].answer === `${type}啟事`
-                                ? 'bg-green-100 border-green-500 text-green-800 scale-102 shadow-md' 
-                                : 'bg-slate-50 border-slate-200 text-slate-400 opacity-60' 
-                              : 'bg-white border-indigo-200 text-indigo-800 hover:bg-indigo-50 hover:border-indigo-400 active:scale-98 cursor-pointer shadow-sm'
-                          }`}
-                        >
-                          {type}啟事
-                        </button>
-                      ))}
+                  <div className="max-w-4xl mx-auto">
+                    <div className="flex justify-between items-center mb-6 text-sm md:text-base font-bold text-slate-400 border-b border-slate-100 pb-3">
+                      <span>關卡 {quizIndex + 1} / {quizTypesOrder.length}</span>
+                      <span className="text-indigo-600 bg-indigo-50 px-4 py-1.5 rounded-full">累積得分：{score} 分</span>
                     </div>
 
-                    {quizFeedback !== null && (
-                      <div className="mt-6 text-center text-lg font-bold animate-in zoom-in flex justify-center items-center gap-2">
-                        {quizFeedback ? (
-                          <span className="text-green-600 flex items-center gap-1.5"><CheckCircle2 className="w-6 h-6" /> 答對了！你太棒了！</span>
-                        ) : (
-                          <span className="text-red-500 flex items-center gap-1.5"><XCircle className="w-6 h-6" /> 答錯了，再接再厲！正確答案是：{quizQuestions[quizIndex].answer}</span>
-                        )}
+                    <div className="grid lg:grid-cols-2 gap-6 lg:gap-10 items-start">
+                      {/* 左側：排序空格區 */}
+                      <div className="bg-slate-50 border-2 border-slate-200 rounded-3xl p-5 md:p-8 shadow-inner">
+                        <h4 className="text-center font-bold text-slate-500 mb-6 text-sm md:text-base">【 正文鋪排排序區 】</h4>
+                        <div className="flex flex-col gap-4 md:gap-5">
+                          {[0, 1, 2].map(idx => (
+                            <div key={`qslot-${idx}`} className="flex items-stretch gap-3 md:gap-4">
+                              <div className="w-16 md:w-20 shrink-0 flex items-center justify-center bg-slate-200 text-slate-600 font-black rounded-xl text-sm md:text-base shadow-sm">
+                                第 {idx + 1} 段
+                              </div>
+                              <div
+                                onDragOver={(e) => handleQuizDragOver(e, idx)}
+                                onDrop={() => handleQuizDropSlot(idx)}
+                                onClick={() => handleQuizSlotClick(quizSlots[idx], idx)}
+                                className={`flex-1 min-h-[80px] p-4 text-sm md:text-base flex items-center justify-center text-center rounded-2xl font-bold border-2 transition-all cursor-pointer draggable-item shadow-sm ${
+                                  quizDragOverSlot === idx ? 'border-indigo-600 bg-indigo-50 scale-102' : ''
+                                } ${
+                                  quizSlots[idx] 
+                                    ? 'bg-indigo-100 border-indigo-400 text-indigo-900' 
+                                    : 'bg-white border-slate-300 border-dashed text-slate-400 hover:bg-slate-50'
+                                }`}
+                                draggable={!!quizSlots[idx]}
+                                onDragStart={() => handleQuizDragStart(quizSlots[idx], idx, 'slot')}
+                              >
+                                {quizSlots[idx] || '（拖放段落至此）'}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* 右側：打亂的備選段落區 */}
+                      <div className="bg-amber-50 border-2 border-amber-200 rounded-3xl p-5 md:p-8 shadow-sm">
+                        <h4 className="text-center font-bold text-amber-700 mb-6 text-sm md:text-base">📦 待排段落（點擊或拖曳）：</h4>
+                        <div className="flex flex-col gap-4 md:gap-5">
+                          {quizBank.map((item, idx) => (
+                            <div
+                              key={`qbank-${idx}`}
+                              draggable={!!item}
+                              onDragStart={() => handleQuizDragStart(item, idx, 'bank')}
+                              onDragEnd={handleQuizDragEnd}
+                              onClick={() => handleQuizBankClick(item, idx)}
+                              className={`p-4 md:p-5 rounded-2xl text-sm md:text-base font-extrabold border-2 transition-all text-center draggable-item shadow-sm ${
+                                item 
+                                  ? 'bg-white border-amber-300 text-amber-900 hover:bg-amber-100 cursor-grab active:cursor-grabbing hover:border-amber-400' 
+                                  : 'bg-amber-50/50 border-amber-100 text-transparent cursor-default border-dashed min-h-[80px]'
+                              }`}
+                            >
+                              {item || '已放入排序區'}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 錯誤提示 */}
+                    {quizError && (
+                      <div className="mt-8 p-5 bg-red-50 border border-red-200 rounded-2xl text-red-700 max-w-2xl mx-auto text-sm md:text-base font-bold flex items-center justify-center gap-2">
+                        <XCircle className="w-6 h-6 shrink-0" />
+                        <div>{quizError}</div>
                       </div>
                     )}
+
+                    {/* 成功提示 */}
+                    {quizSuccess && (
+                      <div className="mt-8 p-5 bg-green-50 border border-green-200 rounded-2xl text-green-700 max-w-2xl mx-auto text-center font-bold flex items-center justify-center gap-2 animate-in zoom-in text-sm md:text-base">
+                        <CheckCircle2 className="w-7 h-7" /> 完全正確！為你切換下一題...
+                      </div>
+                    )}
+
+                    <div className="mt-10 flex justify-center">
+                      <button 
+                        onClick={verifyQuizPuzzle}
+                        disabled={quizSuccess}
+                        className="px-12 py-4 bg-indigo-600 text-white rounded-full font-bold text-lg md:text-xl hover:bg-indigo-700 transition-colors shadow-lg disabled:bg-slate-300"
+                      >
+                        確認排序答案
+                      </button>
+                    </div>
+
                   </div>
                 ) : (
-                  <div className="text-center animate-in zoom-in max-w-md mx-auto">
-                    <div className="w-20 h-20 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4 border border-indigo-100">
-                      <Award className="w-10 h-10" />
+                  <div className="text-center animate-in zoom-in max-w-md mx-auto py-8">
+                    <div className="w-24 h-24 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center mx-auto mb-6 border border-indigo-100 shadow-sm">
+                      <Award className="w-12 h-12" />
                     </div>
-                    <h3 className="text-2xl font-bold text-slate-800 mb-2">全卷作答完畢！</h3>
-                    <p className="text-lg text-slate-500 mb-6">
-                      你一共答對了 <span className="font-extrabold text-indigo-600 text-2xl">{score}</span> / {quizQuestions.length} 題。
+                    <h3 className="text-3xl font-black text-slate-800 mb-3">四種類型全數過關！</h3>
+                    <p className="text-lg text-slate-500 mb-8 font-medium">
+                      恭喜你成功挑戰，獲得總得分：<span className="font-extrabold text-indigo-600 text-3xl mx-1">{score}</span> / {quizTypesOrder.length} 分。
                     </p>
                     <button 
                       onClick={handleQuizNextStep}
-                      className="w-full py-4 bg-indigo-600 text-white rounded-xl font-bold text-lg hover:bg-indigo-700 transition-all shadow-md"
+                      className="w-full py-5 bg-indigo-600 text-white rounded-2xl font-bold text-xl hover:bg-indigo-700 transition-all shadow-lg hover:shadow-xl"
                     >
                       領取證書與登記成績
                     </button>
@@ -1140,7 +1294,7 @@
                               <td className="p-3 border-b">{sub.idNumber}號</td>
                               <td className="p-3 border-b font-medium text-slate-800">{sub.name}</td>
                               <td className="p-3 border-b">
-                                <span className={`px-2 py-1 rounded-full text-xs font-bold ${sub.score === 4 ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}`}>
+                                <span className={`px-2 py-1 rounded-full text-xs font-bold ${sub.score === quizTypesOrder.length ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}`}>
                                   {sub.score} / {sub.totalQuestions} 分
                                 </span>
                               </td>
